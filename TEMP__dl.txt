@@ -1,0 +1,217 @@
+"use client";
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { useToast } from "../ui/use-toast";
+import { FileText } from "lucide-react";
+
+type Shareholder = {
+  id: number;
+  names: string;
+  accountNumber: string;
+  amountPayable: string;
+  unitsHeld: string;
+  rightDue: string;
+};
+
+const DownloadPdf = (id: any) => {
+  const { toast } = useToast();
+  const [downloading, setDownloading] = useState(false);
+
+  // const modifyPdf = async (
+  //   shareholderName: any,
+  //   //  accountNumber: string,
+  //   price: any,
+  //   unit: any,
+  //   unitNo: any,
+  //   rightNo: any
+  // ) => {
+  //   //  console.log(id.account);
+
+  //   const existingPdfBytes = await fetch(
+  //     "/charms.pdf"
+  //   ).then((res) => res.arrayBuffer());
+
+  //   const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  //   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  //   const pages = pdfDoc.getPages();
+  //   const firstPage = pages[1];
+  //   const Pagefirst = pages[0];
+
+  //   // Get the width and height of the first page
+  //   const { width, height } = firstPage.getSize();
+
+  //   Pagefirst.drawText(shareholderName, {
+  //     x: 205,
+  //     y: 820,
+  //     size: 13,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   // Shareholder Name
+  //   firstPage.drawText(shareholderName, {
+  //     x: 205,
+  //     y: height / 2 + 175,
+  //     size: 10,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   // AccountNo
+  //   firstPage.drawText("AcctNo:  " + price, {
+  //     x: 205,
+  //     y: height / 2 + 195,
+  //     size: 10,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   const formatters = new Intl.NumberFormat("en-US");
+  //   const formattedNumberHolding = formatters.format(unitNo);
+
+  //   // Holding / Unit held
+  //   firstPage.drawText(formattedNumberHolding, {
+  //     x: 205,
+  //     y: height / 2 + 160,
+  //     size: 10,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   const formatter = new Intl.NumberFormat("en-US");
+  //   const formattedNumberUnit = formatter.format(unit);
+
+  //   // Right Held
+  //   firstPage.drawText(formattedNumberUnit, {
+  //     x: 205,
+  //     y: height / 2 + 142,
+  //     size: 10,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   const formattedValue = new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: "NGN",
+  //   }).format(rightNo);
+  //   //Amount
+  //   firstPage.drawText(formattedValue, {
+  //     x: 205,
+  //     y: height / 2 + 128,
+  //     size: 10,
+  //     font: helveticaFont,
+  //     color: rgb(0, 0, 0),
+  //     // rotate: degrees(-45),
+  //   });
+
+  //   const pdfBytes: any = await pdfDoc.save();
+
+  //   const bytes = new Uint8Array(pdfBytes);
+  //   const blob = new Blob([bytes], { type: "application/pdf" });
+  //   const docUrl: any = URL.createObjectURL(blob);
+  //   //  setPdfInfo(docUrl);
+  //   // Setting various property values
+  //   let alink = document.createElement("a");
+  //   alink.href = docUrl;
+  //   alink.download = `${id.account}.pdf`;
+  //   alink.click();
+  // };
+
+  const onsubmit = async (accountno: any) => {
+    try {
+      setDownloading(true);
+      const result: Shareholder = await fetch(
+        `/api/fetch-with-account/${accountno}`
+      )
+        .then((response) => response.json())
+        .then((data) => data?.data?.data);
+
+      if (!result || !result.names) {
+        toast({
+          variant: "destructive",
+          title: "No data found for this account",
+        });
+        return;
+      }
+
+      // Load pdf-lib only on demand (client-side)
+      const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+
+      // Build a simple PDF dynamically
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595.28, 841.89]); // A4
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      const drawText = (text: string, x: number, y: number, bold = false, size = 12) => {
+        page.drawText(String(text ?? ""), {
+          x,
+          y,
+          size,
+          font: bold ? fontBold : font,
+          color: rgb(0, 0, 0),
+        });
+      };
+
+      let y = 800;
+      drawText("CHAMS HOLDING COMPANY PLC - Rights Issue", 50, y, true, 16);
+      y -= 30;
+      drawText("Shareholder Details", 50, y, true, 14);
+      y -= 25;
+      drawText(`Name: ${result.names}`, 50, y);
+      y -= 18;
+      drawText(`Account No (RAN): ${result.accountNumber ?? "-"}`, 50, y);
+      y -= 18;
+      drawText(`Units Held: ${result.unitsHeld ?? "-"}`, 50, y);
+      y -= 18;
+      drawText(`Right Due: ${result.rightDue ?? "-"}`, 50, y);
+      y -= 18;
+      drawText(`Amount Payable: ${result.amountPayable ?? "-"}`, 50, y);
+      y -= 30;
+      drawText("This document was generated electronically.", 50, y);
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${result.accountNumber || accountno}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        variant: "default",
+        title: "Download started",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Failed to generate PDF",
+      });
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div>
+      <Button
+        onClick={() => onsubmit(id.account)}
+        className="font-bold"
+        variant={"link"}
+        disabled={downloading}
+      >
+        <FileText className="w-36 h-36" /> {downloading ? "Preparing..." : "Download"}
+      </Button>
+    </div>
+  );
+};
+
+export default DownloadPdf;
+
