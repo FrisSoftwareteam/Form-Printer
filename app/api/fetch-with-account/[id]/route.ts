@@ -7,8 +7,6 @@ type Params = {
 export async function GET(request: Request, context: { params: Params }) {
   const id = context.params.id;
 
-  //https://frisopsapi.azurewebsites.net/api/api/${id}
-
   console.log(id);
 
   try {
