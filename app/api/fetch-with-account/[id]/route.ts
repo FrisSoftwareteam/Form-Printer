@@ -13,9 +13,16 @@ export async function GET(request: Request, context: { params: Params }) {
 
   try {
     const fetchJob = await fetch(
-      `https://charms-api-endpoints.azurewebsites.net/api/jobs/${id}`,
+      // `https://charms-api-endpoints.azurewebsites.net/api/jobs/${id}`,
+      // {
+      //   cache: "no-store",
+      // }
+      `https://form-printer-backend.vercel.app/api/fetch-with-account/${id}`,
       {
         cache: "no-store",
+        headers: {
+          "x-api-key": "firstregistrars_db_presco_2025",
+        },
       }
     );
 
