@@ -177,7 +177,7 @@ const page = () => {
 
           <div className="flex sm:p-5 justify-between font-bold font-sans text-2xl mx-auto gap-1">
             <p className="p-3 m-auto">
-              RIGHTS ISSUE PARTICIPATION FORM DOWNLOAD
+              RIGHTS ISSUE ACCEPTANCE/RENUNCIATION FORM DOWNLOAD
             </p>
             <Download className="h-7 w-7 sm:hidden  font-bold animate-bounce drop-shadow-lg" />
           </div>
@@ -190,7 +190,7 @@ const page = () => {
             Wednesday, November 12, 2025 , Application List Closes
           </div>
           <div className="flex justify-center font-semibold">
-            Tuesday, December 02, 2025, RIGHTS ISSUE OF 1,666,667 ORDINARY
+            Tuesday, December 02, 2025, RIGHTS ISSUE OF 166,666,667 ORDINARY
             SHARES
           </div>
           <div className="flex justify-center font-semibold mb-7">
