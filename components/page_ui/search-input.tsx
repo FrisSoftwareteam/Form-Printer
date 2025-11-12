@@ -45,10 +45,14 @@ export function SearchInput() {
     queryKey: ["shareholderss", inputs],
     queryFn: async () => {
       try {
-        return await fetch(`/api/shareholders-details/${encodeURIComponent(inputs.trim())}`)
+        return await fetch(
+          `/api/shareholders-details/${encodeURIComponent(inputs.trim())}`
+        )
           .then((res: any) => res.json())
           .then((data: any) => {
             setShow(true);
+
+            // console.log(data?.data?.data);
 
             return data?.data?.data ?? [];
           });

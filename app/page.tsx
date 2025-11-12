@@ -99,35 +99,46 @@ const page = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const img = new window.Image();
-    img.src = "/presco_logo.png";
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        const w = 64, h = 64;
-        canvas.width = w; canvas.height = h;
-        ctx.drawImage(img, 0, 0, w, h);
-        const { data } = ctx.getImageData(0, 0, w, h);
-        let r = 0, g = 0, b = 0, count = 0;
-        for (let i = 0; i < data.length; i += 20) {
-          const rr = data[i], gg = data[i + 1], bb = data[i + 2], aa = data[i + 3];
-          if (aa < 10) continue;
-          if (rr > 240 && gg > 240 && bb > 240) continue;
-          r += rr; g += gg; b += bb; count++;
-        }
-        if (count > 0) {
-          r = Math.round(r / count);
-          g = Math.round(g / count);
-          b = Math.round(b / count);
-          const toHex = (n: number) => n.toString(16).padStart(2, "0");
-          setLogoColor(`#${toHex(r)}${toHex(g)}${toHex(b)}`);
-        }
-      } catch {}
-    };
-  }, []);
+  // useEffect(() => {
+  //   const img = new window.Image();
+  //   img.src = "/presco_logo.png";
+  //   img.onload = () => {
+  //     try {
+  //       const canvas = document.createElement("canvas");
+  //       const ctx = canvas.getContext("2d");
+  //       if (!ctx) return;
+  //       const w = 64,
+  //         h = 64;
+  //       canvas.width = w;
+  //       canvas.height = h;
+  //       ctx.drawImage(img, 0, 0, w, h);
+  //       const { data } = ctx.getImageData(0, 0, w, h);
+  //       let r = 0,
+  //         g = 0,
+  //         b = 0,
+  //         count = 0;
+  //       for (let i = 0; i < data.length; i += 20) {
+  //         const rr = data[i],
+  //           gg = data[i + 1],
+  //           bb = data[i + 2],
+  //           aa = data[i + 3];
+  //         if (aa < 10) continue;
+  //         if (rr > 240 && gg > 240 && bb > 240) continue;
+  //         r += rr;
+  //         g += gg;
+  //         b += bb;
+  //         count++;
+  //       }
+  //       if (count > 0) {
+  //         r = Math.round(r / count);
+  //         g = Math.round(g / count);
+  //         b = Math.round(b / count);
+  //         const toHex = (n: number) => n.toString(16).padStart(2, "0");
+  //         setLogoColor(`#${toHex(r)}${toHex(g)}${toHex(b)}`);
+  //       }
+  //     } catch {}
+  //   };
+  // }, []);
 
   return (
     <>
@@ -157,7 +168,10 @@ const page = () => {
             </CardTitle>
           </CardHeader>
           {/* <Separator className="w-[50%] m-auto text-center flex items-center justify-center" /> */}
-          <div className="flex sm:p-8  justify-center  mx-auto text-6xl font-extrabold leading-normal drop-shadow-md" style={{ color: logoColor }}>
+          <div
+            className="flex sm:p-8  justify-center  mx-auto text-6xl font-extrabold leading-normal drop-shadow-md text-[#98C013]"
+            // style={{ color: logoColor }}
+          >
             PRESCO PLC
           </div>
 
@@ -176,7 +190,8 @@ const page = () => {
             Wednesday, November 12, 2025 , Application List Closes
           </div>
           <div className="flex justify-center font-semibold">
-            Tuesday, December 02, 2025, RIGHTS ISSUE OF 1,666,667 ORDINARY SHARES
+            Tuesday, December 02, 2025, RIGHTS ISSUE OF 1,666,667 ORDINARY
+            SHARES
           </div>
           <div className="flex justify-center font-semibold mb-7">
             OF 50 KOBO EACH AT N1,420 PER SHARE
@@ -210,7 +225,8 @@ const page = () => {
 
               <label
                 htmlFor="price"
-                className="block text-sm font-medium leading-6 text-gray-900"></label>
+                className="block text-sm font-medium leading-6 text-gray-900"
+              ></label>
             </div>
           </div>
         </Card>
