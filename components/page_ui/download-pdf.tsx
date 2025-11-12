@@ -179,7 +179,10 @@ const DownloadPdf = (id: any) => {
       const formatCurrencyNGN = (n: any) => {
         try {
           const v = Number(String(n).replace(/[^0-9.-]/g, ""));
-          return new Intl.NumberFormat("en-US", { style: "currency", currency: "NGN" }).format(isNaN(v) ? 0 : v);
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "NGN",
+          }).format(isNaN(v) ? 0 : v);
         } catch {
           return String(n ?? "-");
         }
@@ -201,35 +204,35 @@ const DownloadPdf = (id: any) => {
         });
 
         // Page 2 (index 1): main fields
-        page1.drawText(String(result.names ?? ""), {
+        page0.drawText(String(result.names ?? ""), {
           x: 205,
           y: size1.height / 2 + 218,
           size: 10,
           font,
           color: rgb(0, 0, 0),
         });
-        page1.drawText(`AcctNo:  ${result.accountNumber ?? "-"}`, {
+        page0.drawText(`AcctNo:  ${result.accountNumber ?? "-"}`, {
           x: 205,
           y: size1.height / 2 + 185,
           size: 10,
           font,
           color: rgb(0, 0, 0),
         });
-        page1.drawText(formatNumber(result.unitsHeld), {
+        page0.drawText(formatNumber(result.unitsHeld), {
           x: 205,
           y: size1.height / 2 + 170,
           size: 10,
           font,
           color: rgb(0, 0, 0),
         });
-        page1.drawText(formatNumber(result.rightDue), {
+        page0.drawText(formatNumber(result.rightDue), {
           x: 205,
           y: size1.height / 2 + 152,
           size: 10,
           font,
           color: rgb(0, 0, 0),
         });
-        page1.drawText(formatCurrencyNGN(result.amountPayable), {
+        page0.drawText(formatCurrencyNGN(result.amountPayable), {
           x: 205,
           y: size1.height / 2 + 138,
           size: 10,
@@ -241,15 +244,51 @@ const DownloadPdf = (id: any) => {
         const page = pages[0];
         const { height } = page.getSize();
         const baseY = height - 140; // a bit lower than header area
-        page.drawText(String(result.names ?? ""), { x: 205, y: baseY, size: 12, font, color: rgb(0, 0, 0) });
-        page.drawText(`AcctNo:  ${result.accountNumber ?? "-"}`, { x: 205, y: baseY + 20, size: 12, font, color: rgb(0, 0, 0) });
-        page.drawText(formatNumber(result.unitsHeld), { x: 205, y: baseY - 20, size: 12, font, color: rgb(0, 0, 0) });
-        page.drawText(formatNumber(result.rightDue), { x: 205, y: baseY - 38, size: 12, font, color: rgb(0, 0, 0) });
-        page.drawText(formatCurrencyNGN(result.amountPayable), { x: 205, y: baseY - 52, size: 12, font, color: rgb(0, 0, 0) });
+        page.drawText(String(result.names ?? ""), {
+          x: 205,
+          y: baseY,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(`AcctNo:  ${result.accountNumber ?? "-"}`, {
+          x: 205,
+          y: baseY + 20,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(formatNumber(result.unitsHeld), {
+          x: 205,
+          y: baseY - 20,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(formatNumber(result.rightDue), {
+          x: 205,
+          y: baseY - 38,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText(formatCurrencyNGN(result.amountPayable), {
+          x: 205,
+          y: baseY - 52,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
       } else {
         // Simple fallback layout on a blank A4 page
         const page = pages[0];
-        const drawText = (text: string, x: number, y: number, bold = false, size = 12) => {
+        const drawText = (
+          text: string,
+          x: number,
+          y: number,
+          bold = false,
+          size = 12
+        ) => {
           page.drawText(String(text ?? ""), {
             x,
             y,
@@ -273,7 +312,11 @@ const DownloadPdf = (id: any) => {
         y -= 18;
         drawText(`Right Due: ${formatNumber(result.rightDue)}`, 50, y);
         y -= 18;
-        drawText(`Amount Payable: ${formatCurrencyNGN(result.amountPayable)}`, 50, y);
+        drawText(
+          `Amount Payable: ${formatCurrencyNGN(result.amountPayable)}`,
+          50,
+          y
+        );
         y -= 30;
         drawText("This document was generated electronically.", 50, y);
       }
@@ -311,7 +354,8 @@ const DownloadPdf = (id: any) => {
         variant={"link"}
         disabled={downloading}
       >
-        <FileText className="w-36 h-36" /> {downloading ? "Preparing..." : "Download"}
+        <FileText className="w-36 h-36" />{" "}
+        {downloading ? "Preparing..." : "Download"}
       </Button>
     </div>
   );
