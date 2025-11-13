@@ -147,7 +147,7 @@ const DownloadPdf = (id: any) => {
       let pdfDoc: any;
       let usedTemplate = false;
       try {
-        const tmplResp = await fetch("/presco.pdf", { cache: "no-store" });
+        const tmplResp = await fetch("/new_presco.pdf", { cache: "no-store" });
         if (tmplResp.ok) {
           const tmplBytes = await tmplResp.arrayBuffer();
           pdfDoc = await PDFDocument.load(tmplBytes);
@@ -195,7 +195,7 @@ const DownloadPdf = (id: any) => {
         const size1 = page1.getSize();
 
         // Page 1 (index 0): top banner name
-        page0.drawText(String(result.names ?? ""), {
+        page1.drawText(String(result.names ?? ""), {
           x: 205,
           y: 830,
           size: 13,
